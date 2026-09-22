@@ -1,0 +1,99 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Анастасия Кудинова — поэтесса',
+  description = 'Персональный сайт поэтессы Анастасии Кудиновой. Стихи, биография, творчество.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-ivory/90 backdrop-blur-sm border-b border-gold/10">
+      <nav class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="#" class="text-2xl font-semibold text-charcoal tracking-wide hover:text-gold transition-colors duration-300">
+          А. Кудинова
+        </a>
+        <ul class="hidden sm:flex items-center gap-8 text-lg">
+          <li>
+            <a href="#about" class="text-charcoal-light hover:text-gold transition-colors duration-300">
+              Обо мне
+            </a>
+          </li>
+          <li>
+            <a href="#poems" class="text-charcoal-light hover:text-gold transition-colors duration-300">
+              Стихи
+            </a>
+          </li>
+        </ul>
+        <!-- Mobile menu button -->
+        <button
+          id="mobile-menu-btn"
+          class="sm:hidden p-2 text-charcoal hover:text-gold transition-colors duration-300"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="hidden sm:hidden border-t border-gold/10 bg-ivory/95 backdrop-blur-sm">
+        <ul class="flex flex-col items-center gap-4 py-6 text-lg">
+          <li>
+            <a href="#about" class="text-charcoal-light hover:text-gold transition-colors duration-300 mobile-menu-link">
+              Обо мне
+            </a>
+          </li>
+          <li>
+            <a href="#poems" class="text-charcoal-light hover:text-gold transition-colors duration-300 mobile-menu-link">
+              Стихи
+            </a>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="border-t border-gold/10 bg-ivory-dark py-8">
+      <div class="max-w-6xl mx-auto px-6 text-center text-charcoal-light text-sm">
+        <p>&copy; {new Date().getFullYear()} Анастасия Кудинова. Все права защищены.</p>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+
+      btn?.addEventListener('click', () => {
+        const isOpen = menu?.classList.toggle('hidden') === false;
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      document.querySelectorAll('.mobile-menu-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          menu?.classList.add('hidden');
+          btn?.setAttribute('aria-expanded', 'false');
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+---
+import ScrollFadeIn from './ScrollFadeIn.astro';
+import PoemModal from './PoemModal.astro';
+import { getCollection, render } from 'astro:content';
+
+const allPoems = await getCollection('poems');
+const poems = allPoems.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+function getExcerpt(body: string | undefined, lines = 3): string {
+  if (!body) return '';
+  return body
+    .trim()
+    .split('\n')
+    .filter((line) => line.trim().length > 0)
+    .slice(0, lines)
+    .join('\n');
+}
+
+const renderedPoems = await Promise.all(
+  poems.map(async (poem) => {
+    const { Content } = await render(poem);
+    const excerpt = getExcerpt(poem.body);
+    return { poem, Content, excerpt };
+  })
+);
+---
+
+<section id="poems" class="py-24 lg:py-32 bg-ivory-dark">
+  <div class="max-w-6xl mx-auto px-6">
+    <ScrollFadeIn>
+      <div class="text-center mb-16">
+        <p class="text-gold text-sm tracking-[0.25em] uppercase mb-3">Творчество</p>
+        <h2 class="text-4xl lg:text-5xl font-light text-charcoal">Стихи</h2>
+        <div class="w-12 h-px bg-gold mx-auto mt-6"></div>
+      </div>
+    </ScrollFadeIn>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {renderedPoems.map(({ poem, excerpt }) => (
+        <ScrollFadeIn>
+          <button
+            class="poem-card group w-full text-left p-8 bg-ivory border border-gold/10 hover:border-gold/30 transition-all duration-300 hover:shadow-lg cursor-pointer"
+            data-poem-id={poem.id}
+          >
+            <h3 class="text-xl font-medium text-charcoal mb-4 group-hover:text-gold transition-colors duration-300">
+              {poem.data.title}
+            </h3>
+            <div class="w-8 h-px bg-gold/40 mb-4 group-hover:w-12 transition-all duration-300"></div>
+            <p class="text-charcoal-light leading-relaxed whitespace-pre-line text-base">
+              {excerpt}
+            </p>
+            <span class="inline-block mt-4 text-sm text-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300 tracking-wider uppercase">
+              Читать →
+            </span>
+          </button>
+        </ScrollFadeIn>
+      ))}
+    </div>
+  </div>
+
+  <!-- Modals -->
+  {renderedPoems.map(({ poem, Content }) => (
+    <PoemModal id={poem.id} title={poem.data.title} Content={Content} />
+  ))}
+</section>
+
+<script>
+  // Open modals
+  document.querySelectorAll('.poem-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const poemId = (card as HTMLElement).dataset.poemId;
+      const modal = document.getElementById(`modal-${poemId}`) as HTMLDialogElement | null;
+      modal?.showModal();
+    });
+  });
+
+  // Close modals
+  document.querySelectorAll('.poem-modal-close').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const dialog = btn.closest('dialog') as HTMLDialogElement | null;
+      dialog?.close();
+    });
+  });
+
+  // Close on backdrop click
+  document.querySelectorAll('.poem-modal').forEach((dialog) => {
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) {
+        (dialog as HTMLDialogElement).close();
+      }
+    });
+  });
+</script>

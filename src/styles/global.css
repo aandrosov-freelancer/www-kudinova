@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+
+/* ===== Custom theme ===== */
+@theme {
+  --color-ivory: #FAF8F5;
+  --color-ivory-dark: #F0EDE8;
+  --color-charcoal: #2C2C2C;
+  --color-charcoal-light: #4A4A4A;
+  --color-gold: #B8977E;
+  --color-gold-light: #D4BFA9;
+  --color-gold-dark: #9A7B62;
+
+  --font-serif: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+}
+
+/* ===== Base styles ===== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-serif);
+    background-color: var(--color-ivory);
+    color: var(--color-charcoal);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-gold-light);
+    color: var(--color-charcoal);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

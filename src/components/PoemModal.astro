@@ -1,0 +1,86 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  Content: any;
+}
+
+const { id, title, Content } = Astro.props;
+---
+
+<dialog
+  id={`modal-${id}`}
+  class="poem-modal backdrop:bg-charcoal/60 backdrop:backdrop-blur-sm bg-ivory max-w-2xl w-[90vw] rounded-sm p-0 border border-gold/20 shadow-2xl"
+>
+  <div class="relative p-8 sm:p-12">
+    <button
+      class="poem-modal-close absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-charcoal-light hover:text-gold transition-colors duration-300"
+      aria-label="Закрыть"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div class="text-center mb-8">
+      <p class="text-gold text-xs tracking-[0.25em] uppercase mb-2">Стихотворение</p>
+      <h3 class="text-2xl sm:text-3xl font-light text-charcoal">{title}</h3>
+      <div class="w-10 h-px bg-gold mx-auto mt-4"></div>
+    </div>
+
+    <div class="poem-content text-lg text-charcoal-light leading-relaxed text-center">
+      <Content />
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .poem-modal[open] {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modal-in 0.35s ease-out;
+  }
+
+  .poem-modal[open]::backdrop {
+    animation: backdrop-in 0.3s ease-out;
+  }
+
+  /* Style rendered markdown paragraphs as poem lines */
+  .poem-content :global(p) {
+    margin-bottom: 1.2em;
+  }
+
+  .poem-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .poem-modal[open],
+    .poem-modal[open]::backdrop {
+      animation: none;
+    }
+  }
+</style>
