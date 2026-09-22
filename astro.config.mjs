@@ -7,6 +7,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  site: 'https://aandrosov-freelancer.github.io',
-  base: '/www-kudinova',
+  site: 'https://kudinova.antonandrosov.ru',
 });
