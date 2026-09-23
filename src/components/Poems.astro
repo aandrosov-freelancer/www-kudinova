@@ -11,6 +11,7 @@ function getExcerpt(body: string | undefined, lines = 3): string {
   return body
     .trim()
     .split('\n')
+    .map((line) => line.replaceAll('\\', ''))
     .filter((line) => line.trim().length > 0)
     .slice(0, lines)
     .join('\n');
